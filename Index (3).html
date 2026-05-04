@@ -78,12 +78,14 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--tx);min-hei
   <div class="warn">
     <span style="font-size:1.2rem;flex-shrink:0">⚠️</span>
     <div>
-      <strong>تنبيه هام:</strong> في حال تكرار الرقم القومي سيتم رفض الإدخال تلقائياً وتحويل الحالة <strong>إلزامياً</strong> لإدارة الحالات.
+      <strong>تنبيه هام:</strong> في حال تكرار الرقم القومي، سيتم رفض الإدخال تلقائياً وتحويل الحالة <strong>إلزامياً</strong> لإدارة الحالات.
       <br><strong style="color:#b7770d">لن تُصرف الروشتة في حال وجود تكرار مسجّل.</strong>
     </div>
   </div>
 
   <form id="F" novalidate>
+
+    <!-- بيانات الحالة -->
     <div class="card">
       <div class="ch"><span>👤</span> بيانات الحالة الأساسية</div>
       <div class="cb">
@@ -126,6 +128,7 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--tx);min-hei
       </div>
     </div>
 
+    <!-- المستندات -->
     <div class="card">
       <div class="ch"><span>📋</span> المستندات والروشتة</div>
       <div class="cb">
@@ -162,6 +165,7 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--tx);min-hei
       </div>
     </div>
 
+    <!-- الأدوية -->
     <div class="card">
       <div class="ch g"><span>💊</span> بيانات الأدوية<span style="font-size:.73rem;opacity:.8;margin-right:auto">يمكن إضافة أكثر من دواء</span></div>
       <div class="cb">
@@ -177,6 +181,7 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--tx);min-hei
   </form>
 </div>
 
+<!-- رفض التكرار -->
 <div class="ov" id="ovR">
   <div class="oc d">
     <div class="oi">🚫</div>
@@ -190,6 +195,7 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--tx);min-hei
   </div>
 </div>
 
+<!-- نجاح -->
 <div class="ov" id="ovS">
   <div class="oc s">
     <div class="oi">✅</div>
@@ -199,6 +205,7 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--tx);min-hei
   </div>
 </div>
 
+<!-- خطأ -->
 <div class="ov" id="ovE">
   <div class="oc d">
     <div class="oi">⚠️</div>
@@ -209,66 +216,62 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--tx);min-hei
 </div>
 
 <script>
-const API = "<?= ScriptApp.getService().getUrl() ?>";
+// ═══ رابط الـ API — استبدله برابطك ═══
+const API = "https://script.google.com/macros/s/AKfycbw72gXsGc1ccfJNcoF2IWI6knWqHl4YswTk2KLsY4BorQIZBNm365uQU5iUBrBQmKUe/exec";
+// ─── NID ───────────────────────────────────────────────────
+let nidOK=null, nidBusy=false, nidTimer=null;
 
-const g = id => document.getElementById(id);
-function sho(id){g(id).style.display='block';}
-function hid(id){g(id).style.display='none';}
-function showE(id,msg){const e=g(id);e.textContent=msg;e.style.display='block';}
-function sOv(id){g(id).classList.add('show');}
-function cOv(id){g(id).classList.remove('show');}
-function setLoad(on,txt='✅ حفظ وتسجيل البيانات'){
-  g('sBtn').disabled=on;
-  g('spin').style.display=on?'block':'none';
-  g('sTxt').textContent=on?txt:'✅ حفظ وتسجيل البيانات';
-}
-const toB64=f=>new Promise((res,rej)=>{
-  const r=new FileReader();r.readAsDataURL(f);
-  r.onload=()=>res(r.result);r.onerror=rej;
-});
-
-// ─── NID ───
-let nidOK=null,nidBusy=false,nidTimer=null;
 function onNID(el){
   clearTimeout(nidTimer);
-  nidOK=null;nidBusy=false;
+  nidOK=null; nidBusy=false;
   el.classList.remove('err','ok');
   g('nIco').textContent='';
-  hid('nChk');hid('e2');
+  hid('nChk'); hid('e2');
   const v=el.value.trim();
   upBar();
-  if(v.length!==14)return;
+  if(v.length!==14) return;
   if(!/^[23]\d{13}$/.test(v)){
     el.classList.add('err');
     showE('e2','صيغة الرقم القومي غير صحيحة');
-    nidOK='bad';return;
+    nidOK='bad'; return;
   }
-  sho('nChk');nidBusy=true;
+  sho('nChk'); nidBusy=true;
   nidTimer=setTimeout(()=>chkNID(v),700);
 }
+
 async function chkNID(nid){
-  const el=g('nid'),ic=g('nIco');
+  const el=g('nid'), ic=g('nIco');
   try{
-    const res=await fetch(API+'?action=checkNID&nid='+encodeURIComponent(nid),{redirect:'follow'});
+    // استخدام no-cors mode كـ fallback للموبايل
+    const ctrl = new AbortController();
+    const to = setTimeout(()=>ctrl.abort(), 8000);
+    
+    const res=await fetch(API+'?action=checkNID&nid='+encodeURIComponent(nid), {
+      signal: ctrl.signal,
+      headers: { 'Accept': 'application/json' }
+    });
+    clearTimeout(to);
+    
     const d=await res.json();
-    nidBusy=false;hid('nChk');ic.style.display='inline';
+    nidBusy=false; hid('nChk'); ic.style.display='inline';
     if(d.exists){
-      nidOK=false;el.classList.add('err');ic.textContent='🔴';
+      nidOK=false; el.classList.add('err'); ic.textContent='🔴';
       showE('e2','⚠️ رقم قومي مكرر — الحالة مسجّلة مسبقاً');
     }else{
-      nidOK=true;el.classList.add('ok');ic.textContent='🟢';
+      nidOK=true; el.classList.add('ok'); ic.textContent='🟢';
     }
   }catch(e){
-    nidBusy=false;hid('nChk');ic.textContent='🟡';nidOK='err';
+    nidBusy=false; hid('nChk'); ic.textContent='🟡'; nidOK='err';
+    console.error('NID check error:', e);
   }
   upBar();
 }
 
-// ─── Files ───
+// ─── Files ─────────────────────────────────────────────────
 function handleF(inp,nId,pId,eId){
-  const f=inp.files[0];if(!f)return;
+  const f=inp.files[0]; if(!f) return;
   if(f.size>5*1024*1024){alert('حجم الملف يتجاوز 5MB');inp.value='';return;}
-  const n=g(nId);n.textContent='📎 '+f.name;n.style.display='block';
+  const n=g(nId); n.textContent='📎 '+f.name; n.style.display='block';
   hid(eId);
   const r=new FileReader();
   r.onload=ev=>{const i=g(pId);i.src=ev.target.result;i.style.display='block';};
@@ -276,12 +279,12 @@ function handleF(inp,nId,pId,eId){
   upBar();
 }
 
-// ─── Medicines ───
+// ─── Medicines ─────────────────────────────────────────────
 let mC=0;
 function addM(){
   mC++;
   const d=document.createElement('div');
-  d.className='mi';d.id='m'+mC;
+  d.className='mi'; d.id='m'+mC;
   d.innerHTML=`<div class="mh">
     <span class="mn">دواء #${mC}</span>
     ${mC>1?`<button type="button" class="bdel" onclick="g('m${mC}').remove()">🗑 حذف</button>`:''}
@@ -294,13 +297,36 @@ function addM(){
   upBar();
 }
 
-// ─── Progress ───
+// ─── Progress ──────────────────────────────────────────────
 function upBar(){
   const f=['caseName','phone','center'].filter(id=>g(id)?.value?.trim()).length;
-  const done=f+(g('nid')?.value?.length===14?1:0)+(g('pFile')?.files?.length>0?1:0)+(g('iFile')?.files?.length>0?1:0)+(g('mList')?.children?.length>0?1:0);
+  const done=f
+    +(g('nid')?.value?.length===14?1:0)
+    +(g('pFile')?.files?.length>0?1:0)
+    +(g('iFile')?.files?.length>0?1:0)
+    +(g('mList')?.children?.length>0?1:0);
   g('pb').style.width=Math.round(done/7*100)+'%';
 }
 document.querySelectorAll('input,select,textarea').forEach(el=>el.addEventListener('input',upBar));
+
+// ─── Utils ─────────────────────────────────────────────────
+const g=id=>document.getElementById(id);
+function sho(id){g(id).style.display='block';}
+function hid(id){g(id).style.display='none';}
+function showE(id,msg){const e=g(id);e.textContent=msg;e.style.display='block';}
+function sOv(id){g(id).classList.add('show');}
+function cOv(id){g(id).classList.remove('show');}
+function setLoad(on,txt='✅ حفظ وتسجيل البيانات'){
+  g('sBtn').disabled=on;
+  g('spin').style.display=on?'block':'none';
+  g('sTxt').textContent=on?txt:'✅ حفظ وتسجيل البيانات';
+}
+const toB64=f=>new Promise((res,rej)=>{
+  const r=new FileReader();
+  r.readAsDataURL(f);
+  r.onload=()=>res(r.result);
+  r.onerror=rej;
+});
 
 function resetAll(){
   cOv('ovS');
@@ -311,64 +337,90 @@ function resetAll(){
   g('nIco').textContent='';
   document.querySelectorAll('.fe').forEach(e=>e.style.display='none');
   document.querySelectorAll('.err,.ok').forEach(e=>e.classList.remove('err','ok'));
-  nidOK=null;nidBusy=false;mC=0;
-  upBar();addM();
+  nidOK=null; nidBusy=false; mC=0;
+  upBar(); addM();
 }
 
-// ─── SUBMIT ───
-g('F').addEventListener('submit',async function(e){
+// ─── SUBMIT ────────────────────────────────────────────────
+g('F').addEventListener('submit', async function(e){
   e.preventDefault();
   document.querySelectorAll('.fe').forEach(el=>el.style.display='none');
   let ok=true;
 
-  const caseName=g('caseName').value.trim();
-  const nid=g('nid').value.trim();
-  const phone=g('phone').value.trim();
-  const center=g('center').value;
-  const notes=g('notes').value.trim();
-  const pF=g('pFile').files[0];
-  const iF=g('iFile').files[0];
+  const caseName = g('caseName').value.trim();
+  const nid      = g('nid').value.trim();
+  const phone    = g('phone').value.trim();
+  const center   = g('center').value;
+  const notes    = g('notes').value.trim();
+  const pF       = g('pFile').files[0];
+  const iF       = g('iFile').files[0];
 
-  if(!caseName){showE('e1','يرجى إدخال الاسم');ok=false;}
-  if(nid.length!==14){showE('e2','يرجى إدخال رقم قومي صحيح (14 رقم)');ok=false;}
+  if(!caseName)          {showE('e1','يرجى إدخال الاسم');ok=false;}
+  if(nid.length!==14)    {showE('e2','يرجى إدخال رقم قومي صحيح (14 رقم)');ok=false;}
   if(!phone||phone.length<10){showE('e3','يرجى إدخال رقم هاتف صحيح');ok=false;}
-  if(!center){showE('e4','يرجى اختيار المركز');ok=false;}
-  if(!pF){showE('e5','يرجى رفع صورة الروشتة');ok=false;}
-  if(!iF){showE('e6','يرجى رفع صورة البطاقة');ok=false;}
+  if(!center)            {showE('e4','يرجى اختيار المركز');ok=false;}
+  if(!pF)                {showE('e5','يرجى رفع صورة الروشتة');ok=false;}
+  if(!iF)                {showE('e6','يرجى رفع صورة البطاقة');ok=false;}
 
   const mNames=[...document.querySelectorAll('[name="mn[]"]')].map(i=>i.value.trim());
-  const mQtys=[...document.querySelectorAll('[name="mq[]"]')].map(i=>i.value.trim());
-  if(!mNames.length||mNames.some(n=>!n)||mQtys.some(q=>!q)){alert('يرجى إدخال بيانات الأدوية كاملة');ok=false;}
-  if(!ok)return;
+  const mQtys =[...document.querySelectorAll('[name="mq[]"]')].map(i=>i.value.trim());
+  if(!mNames.length||mNames.some(n=>!n)||mQtys.some(q=>!q)){
+    alert('يرجى إدخال بيانات الأدوية كاملة'); ok=false;
+  }
+  if(!ok) return;
 
+  // فحص التكرار
   if(nidBusy){alert('جارٍ التحقق من الرقم القومي، انتظر لحظة...');return;}
   if(nidOK===false){g('rNID').textContent=nid;sOv('ovR');return;}
 
+  // لو لم يفحص بعد — نفعله الآن
   if(nidOK===null||nidOK==='err'){
     setLoad(true,'جارٍ التحقق...');
     try{
-      const r=await fetch(API+'?action=checkNID&nid='+encodeURIComponent(nid),{redirect:'follow'});
+      const ctrl = new AbortController();
+      const to = setTimeout(()=>ctrl.abort(), 8000);
+      const r=await fetch(API+'?action=checkNID&nid='+encodeURIComponent(nid), {
+        signal: ctrl.signal,
+        headers: { 'Accept': 'application/json' }
+      });
+      clearTimeout(to);
       const d=await r.json();
       if(d.exists){setLoad(false);g('rNID').textContent=nid;sOv('ovR');return;}
     }catch(_){}
     setLoad(false);
   }
 
+  // إرسال البيانات — استخدام FormData لتجنب CORS Preflight
   setLoad(true,'جارٍ الحفظ...');
   try{
     const [pB64,iB64]=await Promise.all([toB64(pF),toB64(iF)]);
-    const payload={
-      action:'submit',caseName,nid,phone,center,notes,
-      medicines:JSON.stringify(mNames.map((n,i)=>({name:n,qty:mQtys[i]}))),
-      presc:pB64,idCard:iB64
-    };
+    
+    // نرسل كـ x-www-form-urlencoded لتجنب Preflight
+    const params = new URLSearchParams();
+    params.append('action', 'submit');
+    params.append('caseName', caseName);
+    params.append('nid', nid);
+    params.append('phone', phone);
+    params.append('center', center);
+    params.append('notes', notes);
+    params.append('medicines', JSON.stringify(mNames.map((n,i)=>({name:n,qty:mQtys[i]}))));
+    params.append('presc', pB64);
+    params.append('idCard', iB64);
 
+    const ctrl = new AbortController();
+    const to = setTimeout(()=>ctrl.abort(), 25000);
+    
     const res=await fetch(API,{
       method:'POST',
-      headers:{'Content-Type':'text/plain'},
-      body:JSON.stringify(payload),
-      redirect:'follow'
+      signal: ctrl.signal,
+      headers:{
+        'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8',
+        'Accept':'application/json'
+      },
+      body: params.toString()
     });
+    clearTimeout(to);
+    
     const data=await res.json();
     setLoad(false);
 
@@ -376,17 +428,18 @@ g('F').addEventListener('submit',async function(e){
       g('sMsg').textContent=`تم تسجيل الحالة "${caseName}" بنجاح — السجل رقم ${data.row}`;
       sOv('ovS');
     }else if(data.status==='duplicate'){
-      g('rNID').textContent=nid;sOv('ovR');
+      g('rNID').textContent=nid; sOv('ovR');
     }else{
-      g('eMsg').textContent=data.message||'خطأ غير معروف';sOv('ovE');
+      g('eMsg').textContent=data.message||'خطأ غير معروف'; sOv('ovE');
     }
   }catch(err){
     setLoad(false);
-    g('eMsg').textContent='تعذّر الاتصال: '+err.message;sOv('ovE');
+    console.error('Submit error:', err);
+    g('eMsg').textContent='تعذّر الاتصال: '+err.message; sOv('ovE');
   }
 });
 
-addM();upBar();
+addM(); upBar();
 </script>
 </body>
 </html>
