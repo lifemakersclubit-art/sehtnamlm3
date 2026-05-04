@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>استمارة تسجيل مساعدات طبية — صناع الحياة</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--pr:#1a5276;--pl:#2471a3;--ac:#148f77;--al:#1abc9c;--da:#c0392b;--dl:#e74c3c;--bg:#f4f6f8;--ca:#fff;--tx:#1c2833;--mu:#5d6d7e;--bo:#d5d8dc;--r:12px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh}
+.hdr{background:linear-gradient(135deg,var(--pr),var(--pl) 60%,var(--ac));color:#fff;padding:22px 26px;display:flex;align-items:center;gap:14px;box-shadow:0 4px 24px rgba(26,82,118,.25)}
+.hico{width:50px;height:50px;background:rgba(255,255,255,.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.hdr h1{font-size:1.3rem;font-weight:900}.hdr p{font-size:.8rem;opacity:.8;margin-top:2px}
+.pbw{height:4px;background:#dde}.pb{height:100%;background:linear-gradient(90deg,var(--pl),var(--al));width:0;transition:width .4s}
+.main{max-width:740px;margin:0 auto;padding:26px 12px 60px}
+.warn{background:#fef9e7;border:1.5px solid #f39c12;border-right:5px solid #f39c12;border-radius:var(--r);padding:12px 15px;margin-bottom:22px;display:flex;gap:10px;align-items:flex-start;font-size:.84rem;line-height:1.75;color:#7d6608}
+.card{background:var(--ca);border-radius:var(--r);box-shadow:0 4px 20px rgba(26,82,118,.10);margin-bottom:18px;overflow:hidden}
+.ch{background:linear-gradient(90deg,var(--pr),var(--pl));color:#fff;padding:12px 17px;font-size:.9rem;font-weight:700;display:flex;align-items:center;gap:8px}
+.ch.g{background:linear-gradient(90deg,#0e6655,var(--ac))}
+.cb{padding:18px 16px}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:13px}
+.fr.s{grid-template-columns:1fr}
+@media(max-width:500px){.fr{grid-template-columns:1fr}}
+.f{display:flex;flex-direction:column;gap:5px}
+.f label{font-size:.79rem;font-weight:700;color:var(--pr)}
+.req{color:var(--dl)}
+.f input,.f select,.f textarea{font-family:'Cairo';font-size:.87rem;padding:10px 12px;border:1.5px solid var(--bo);border-radius:8px;background:#fafbfc;color:var(--tx);outline:none;width:100%;transition:border-color .2s,box-shadow .2s}
+.f input:focus,.f select:focus,.f textarea:focus{border-color:var(--pl);box-shadow:0 0 0 3px rgba(36,113,163,.1);background:#fff}
+.f input.err{border-color:var(--dl)!important;background:#fff9f9!important}
+.f input.ok{border-color:var(--al)!important;background:#f0faf7!important}
+.fe{font-size:.74rem;color:var(--dl);display:none;margin-top:1px}
+.fh{font-size:.74rem;color:var(--mu)}
+.nw{position:relative}
+.ni{position:absolute;left:10px;top:50%;transform:translateY(-50%);pointer-events:none;font-size:.9rem}
+.nc{font-size:.74rem;color:var(--pl);display:none}
+.upbox{border:2px dashed var(--bo);border-radius:10px;padding:16px 10px;text-align:center;cursor:pointer;background:#fafbfc;position:relative;transition:.2s;min-height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.upbox:hover{border-color:var(--pl);background:#eaf4fb}
+.upbox input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.ui{font-size:1.7rem;margin-bottom:4px}.ul{font-size:.76rem;color:var(--mu);line-height:1.4}
+.un{font-size:.76rem;color:var(--ac);font-weight:700;margin-top:4px;display:none}
+.fp{max-width:80px;max-height:70px;border-radius:6px;margin-top:6px;display:none}
+.mi{background:#f8f9fa;border:1.5px solid var(--bo);border-radius:10px;padding:13px;margin-bottom:9px;animation:fi .2s ease}
+@keyframes fi{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
+.mn{background:var(--pr);color:#fff;font-size:.72rem;font-weight:700;padding:2px 9px;border-radius:20px}
+.bdel{background:#fdecea;color:var(--dl);border:none;cursor:pointer;font-family:'Cairo';font-size:.76rem;font-weight:700;padding:3px 10px;border-radius:6px}
+.bdel:hover{background:#f5b7b1}
+.badd{background:linear-gradient(90deg,var(--ac),var(--al));color:#fff;border:none;cursor:pointer;font-family:'Cairo';font-size:.84rem;font-weight:700;padding:9px 18px;border-radius:8px;display:flex;align-items:center;gap:6px;margin-top:2px}
+.bsub{width:100%;background:linear-gradient(135deg,var(--pr),var(--pl) 55%,var(--ac));color:#fff;border:none;cursor:pointer;font-family:'Cairo';font-size:.98rem;font-weight:900;padding:15px;border-radius:10px;box-shadow:0 8px 32px rgba(26,82,118,.18);display:flex;align-items:center;justify-content:center;gap:10px;transition:opacity .2s,transform .15s;margin-top:22px}
+.bsub:hover:not(:disabled){opacity:.9;transform:translateY(-2px)}
+.bsub:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center;padding:14px}
+.ov.show{display:flex}
+.oc{background:#fff;border-radius:16px;padding:28px 22px;max-width:420px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.22);animation:pop .3s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pop{from{opacity:0;transform:scale(.82)}to{opacity:1;transform:scale(1)}}
+.oi{font-size:3rem;margin-bottom:12px}.oc h2{font-size:1.15rem;font-weight:900;margin-bottom:8px}.oc p{font-size:.86rem;color:var(--mu);line-height:1.8;margin-bottom:16px}
+.oc.d h2{color:var(--da)}.oc.s h2{color:var(--ac)}
+.nbox{background:#fdecea;border:1.5px solid var(--dl);border-radius:8px;padding:8px 13px;font-size:.96rem;font-weight:700;color:var(--da);margin-bottom:13px;letter-spacing:1px;direction:ltr}
+.bov{border:none;cursor:pointer;font-family:'Cairo';font-size:.86rem;font-weight:700;padding:9px 24px;border-radius:8px}
+.bov.p{background:var(--pr);color:#fff}.bov.r{background:var(--dl);color:#fff}
+.spin{width:17px;height:17px;border:3px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;display:none;flex-shrink:0}
+@keyframes sp{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hico">💊</div>
+  <div>
+    <h1>استمارة تسجيل المساعدات الطبية</h1>
+    <p>جمعية صناع الحياة المنوفية — نظام إدارة الحالات</p>
+  </div>
+</div>
+<div class="pbw"><div class="pb" id="pb"></div></div>
+
+<div class="main">
+  <div class="warn">
+    <span style="font-size:1.2rem;flex-shrink:0">⚠️</span>
+    <div>
+      <strong>تنبيه هام:</strong> في حال تكرار الرقم القومي سيتم رفض الإدخال تلقائياً وتحويل الحالة <strong>إلزامياً</strong> لإدارة الحالات.
+      <br><strong style="color:#b7770d">لن تُصرف الروشتة في حال وجود تكرار مسجّل.</strong>
+    </div>
+  </div>
+
+  <form id="F" novalidate>
+    <div class="card">
+      <div class="ch"><span>👤</span> بيانات الحالة الأساسية</div>
+      <div class="cb">
+        <div class="fr">
+          <div class="f">
+            <label>اسم الحالة <span class="req">*</span></label>
+            <input type="text" id="caseName" placeholder="الاسم الرباعي">
+            <span class="fe" id="e1">يرجى إدخال الاسم</span>
+          </div>
+          <div class="f">
+            <label>الرقم القومي <span class="req">*</span></label>
+            <div class="nw">
+              <input type="text" id="nid" placeholder="14 رقم" maxlength="14"
+                     inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'');onNID(this)">
+              <span class="ni" id="nIco"></span>
+            </div>
+            <span class="nc" id="nChk">⏳ جارٍ التحقق...</span>
+            <span class="fh">يتم التحقق تلقائياً من التكرار</span>
+            <span class="fe" id="e2"></span>
+          </div>
+        </div>
+        <div class="fr">
+          <div class="f">
+            <label>رقم الهاتف <span class="req">*</span></label>
+            <input type="tel" id="phone" placeholder="01XXXXXXXXX" maxlength="11"
+                   inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'')">
+            <span class="fe" id="e3">يرجى إدخال رقم هاتف صحيح</span>
+          </div>
+          <div class="f">
+            <label>المركز <span class="req">*</span></label>
+            <select id="center">
+              <option value="">— اختر المركز —</option>
+              <option>شبين الكوم</option><option>منوف</option><option>أشمون</option>
+              <option>قويسنا</option><option>بركة السبع</option><option>الشهداء</option>
+              <option>تلا</option><option>الباجور</option>
+            </select>
+            <span class="fe" id="e4">يرجى اختيار المركز</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ch"><span>📋</span> المستندات والروشتة</div>
+      <div class="cb">
+        <div class="fr">
+          <div class="f">
+            <label>صورة الروشتة الطبية <span class="req">*</span></label>
+            <div class="upbox" onclick="document.getElementById('pFile').click()">
+              <div class="ui">📄</div>
+              <div class="ul">اضغط لرفع صورة الروشتة<br><small>JPG/PNG — حد 5MB</small></div>
+              <div class="un" id="pName"></div>
+              <img class="fp" id="pPrev">
+              <input type="file" id="pFile" accept="image/*" onchange="handleF(this,'pName','pPrev','e5')">
+            </div>
+            <span class="fe" id="e5">يرجى رفع صورة الروشتة</span>
+          </div>
+          <div class="f">
+            <label>صورة البطاقة الشخصية <span class="req">*</span></label>
+            <div class="upbox" onclick="document.getElementById('iFile').click()">
+              <div class="ui">🪪</div>
+              <div class="ul">اضغط لرفع صورة البطاقة<br><small>JPG/PNG — حد 5MB</small></div>
+              <div class="un" id="iName"></div>
+              <img class="fp" id="iPrev">
+              <input type="file" id="iFile" accept="image/*" onchange="handleF(this,'iName','iPrev','e6')">
+            </div>
+            <span class="fe" id="e6">يرجى رفع صورة البطاقة</span>
+          </div>
+        </div>
+        <div class="fr s">
+          <div class="f">
+            <label>ملاحظات</label>
+            <textarea id="notes" rows="2" placeholder="أي ملاحظات إضافية..."></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ch g"><span>💊</span> بيانات الأدوية<span style="font-size:.73rem;opacity:.8;margin-right:auto">يمكن إضافة أكثر من دواء</span></div>
+      <div class="cb">
+        <div id="mList"></div>
+        <button type="button" class="badd" onclick="addM()">＋ إضافة دواء</button>
+      </div>
+    </div>
+
+    <button type="submit" class="bsub" id="sBtn">
+      <span class="spin" id="spin"></span>
+      <span id="sTxt">✅ حفظ وتسجيل البيانات</span>
+    </button>
+  </form>
+</div>
+
+<div class="ov" id="ovR">
+  <div class="oc d">
+    <div class="oi">🚫</div>
+    <h2>تم رفض الإدخال — رقم قومي مكرر</h2>
+    <div class="nbox" id="rNID"></div>
+    <p>هذا الرقم القومي مسجّل بالفعل في النظام.<br>
+    <strong>يجب تحويل الحالة إلزامياً لإدارة الحالات</strong><br>
+    لإجراء بحث ومتابعة للأسرة.<br>
+    <span style="color:var(--da);font-weight:700">لن تُصرف الروشتة.</span></p>
+    <button class="bov r" onclick="cOv('ovR')">حسناً — سيتم التحويل للإدارة</button>
+  </div>
+</div>
+
+<div class="ov" id="ovS">
+  <div class="oc s">
+    <div class="oi">✅</div>
+    <h2>تم الحفظ بنجاح</h2>
+    <p id="sMsg">تم تسجيل الحالة بنجاح.</p>
+    <button class="bov p" onclick="resetAll()">تسجيل حالة جديدة</button>
+  </div>
+</div>
+
+<div class="ov" id="ovE">
+  <div class="oc d">
+    <div class="oi">⚠️</div>
+    <h2>حدث خطأ</h2>
+    <p id="eMsg"></p>
+    <button class="bov r" onclick="cOv('ovE')">إعادة المحاولة</button>
+  </div>
+</div>
+
+<script>
+const API = "<?= ScriptApp.getService().getUrl() ?>";
+
+const g = id => document.getElementById(id);
+function sho(id){g(id).style.display='block';}
+function hid(id){g(id).style.display='none';}
+function showE(id,msg){const e=g(id);e.textContent=msg;e.style.display='block';}
+function sOv(id){g(id).classList.add('show');}
+function cOv(id){g(id).classList.remove('show');}
+function setLoad(on,txt='✅ حفظ وتسجيل البيانات'){
+  g('sBtn').disabled=on;
+  g('spin').style.display=on?'block':'none';
+  g('sTxt').textContent=on?txt:'✅ حفظ وتسجيل البيانات';
+}
+const toB64=f=>new Promise((res,rej)=>{
+  const r=new FileReader();r.readAsDataURL(f);
+  r.onload=()=>res(r.result);r.onerror=rej;
+});
+
+// ─── NID ───
+let nidOK=null,nidBusy=false,nidTimer=null;
+function onNID(el){
+  clearTimeout(nidTimer);
+  nidOK=null;nidBusy=false;
+  el.classList.remove('err','ok');
+  g('nIco').textContent='';
+  hid('nChk');hid('e2');
+  const v=el.value.trim();
+  upBar();
+  if(v.length!==14)return;
+  if(!/^[23]\d{13}$/.test(v)){
+    el.classList.add('err');
+    showE('e2','صيغة الرقم القومي غير صحيحة');
+    nidOK='bad';return;
+  }
+  sho('nChk');nidBusy=true;
+  nidTimer=setTimeout(()=>chkNID(v),700);
+}
+async function chkNID(nid){
+  const el=g('nid'),ic=g('nIco');
+  try{
+    const res=await fetch(API+'?action=checkNID&nid='+encodeURIComponent(nid),{redirect:'follow'});
+    const d=await res.json();
+    nidBusy=false;hid('nChk');ic.style.display='inline';
+    if(d.exists){
+      nidOK=false;el.classList.add('err');ic.textContent='🔴';
+      showE('e2','⚠️ رقم قومي مكرر — الحالة مسجّلة مسبقاً');
+    }else{
+      nidOK=true;el.classList.add('ok');ic.textContent='🟢';
+    }
+  }catch(e){
+    nidBusy=false;hid('nChk');ic.textContent='🟡';nidOK='err';
+  }
+  upBar();
+}
+
+// ─── Files ───
+function handleF(inp,nId,pId,eId){
+  const f=inp.files[0];if(!f)return;
+  if(f.size>5*1024*1024){alert('حجم الملف يتجاوز 5MB');inp.value='';return;}
+  const n=g(nId);n.textContent='📎 '+f.name;n.style.display='block';
+  hid(eId);
+  const r=new FileReader();
+  r.onload=ev=>{const i=g(pId);i.src=ev.target.result;i.style.display='block';};
+  r.readAsDataURL(f);
+  upBar();
+}
+
+// ─── Medicines ───
+let mC=0;
+function addM(){
+  mC++;
+  const d=document.createElement('div');
+  d.className='mi';d.id='m'+mC;
+  d.innerHTML=`<div class="mh">
+    <span class="mn">دواء #${mC}</span>
+    ${mC>1?`<button type="button" class="bdel" onclick="g('m${mC}').remove()">🗑 حذف</button>`:''}
+  </div>
+  <div class="fr">
+    <div class="f"><label>اسم الدواء <span class="req">*</span></label><input type="text" name="mn[]" placeholder="اسم الدواء" required></div>
+    <div class="f"><label>الكمية <span class="req">*</span></label><input type="text" name="mq[]" placeholder="مثال: علبتان" required></div>
+  </div>`;
+  g('mList').appendChild(d);
+  upBar();
+}
+
+// ─── Progress ───
+function upBar(){
+  const f=['caseName','phone','center'].filter(id=>g(id)?.value?.trim()).length;
+  const done=f+(g('nid')?.value?.length===14?1:0)+(g('pFile')?.files?.length>0?1:0)+(g('iFile')?.files?.length>0?1:0)+(g('mList')?.children?.length>0?1:0);
+  g('pb').style.width=Math.round(done/7*100)+'%';
+}
+document.querySelectorAll('input,select,textarea').forEach(el=>el.addEventListener('input',upBar));
+
+function resetAll(){
+  cOv('ovS');
+  g('F').reset();
+  g('mList').innerHTML='';
+  ['pName','iName'].forEach(id=>{g(id).style.display='none';});
+  ['pPrev','iPrev'].forEach(id=>{g(id).style.display='none';});
+  g('nIco').textContent='';
+  document.querySelectorAll('.fe').forEach(e=>e.style.display='none');
+  document.querySelectorAll('.err,.ok').forEach(e=>e.classList.remove('err','ok'));
+  nidOK=null;nidBusy=false;mC=0;
+  upBar();addM();
+}
+
+// ─── SUBMIT ───
+g('F').addEventListener('submit',async function(e){
+  e.preventDefault();
+  document.querySelectorAll('.fe').forEach(el=>el.style.display='none');
+  let ok=true;
+
+  const caseName=g('caseName').value.trim();
+  const nid=g('nid').value.trim();
+  const phone=g('phone').value.trim();
+  const center=g('center').value;
+  const notes=g('notes').value.trim();
+  const pF=g('pFile').files[0];
+  const iF=g('iFile').files[0];
+
+  if(!caseName){showE('e1','يرجى إدخال الاسم');ok=false;}
+  if(nid.length!==14){showE('e2','يرجى إدخال رقم قومي صحيح (14 رقم)');ok=false;}
+  if(!phone||phone.length<10){showE('e3','يرجى إدخال رقم هاتف صحيح');ok=false;}
+  if(!center){showE('e4','يرجى اختيار المركز');ok=false;}
+  if(!pF){showE('e5','يرجى رفع صورة الروشتة');ok=false;}
+  if(!iF){showE('e6','يرجى رفع صورة البطاقة');ok=false;}
+
+  const mNames=[...document.querySelectorAll('[name="mn[]"]')].map(i=>i.value.trim());
+  const mQtys=[...document.querySelectorAll('[name="mq[]"]')].map(i=>i.value.trim());
+  if(!mNames.length||mNames.some(n=>!n)||mQtys.some(q=>!q)){alert('يرجى إدخال بيانات الأدوية كاملة');ok=false;}
+  if(!ok)return;
+
+  if(nidBusy){alert('جارٍ التحقق من الرقم القومي، انتظر لحظة...');return;}
+  if(nidOK===false){g('rNID').textContent=nid;sOv('ovR');return;}
+
+  if(nidOK===null||nidOK==='err'){
+    setLoad(true,'جارٍ التحقق...');
+    try{
+      const r=await fetch(API+'?action=checkNID&nid='+encodeURIComponent(nid),{redirect:'follow'});
+      const d=await r.json();
+      if(d.exists){setLoad(false);g('rNID').textContent=nid;sOv('ovR');return;}
+    }catch(_){}
+    setLoad(false);
+  }
+
+  setLoad(true,'جارٍ الحفظ...');
+  try{
+    const [pB64,iB64]=await Promise.all([toB64(pF),toB64(iF)]);
+    const payload={
+      action:'submit',caseName,nid,phone,center,notes,
+      medicines:JSON.stringify(mNames.map((n,i)=>({name:n,qty:mQtys[i]}))),
+      presc:pB64,idCard:iB64
+    };
+
+    const res=await fetch(API,{
+      method:'POST',
+      headers:{'Content-Type':'text/plain'},
+      body:JSON.stringify(payload),
+      redirect:'follow'
+    });
+    const data=await res.json();
+    setLoad(false);
+
+    if(data.status==='success'){
+      g('sMsg').textContent=`تم تسجيل الحالة "${caseName}" بنجاح — السجل رقم ${data.row}`;
+      sOv('ovS');
+    }else if(data.status==='duplicate'){
+      g('rNID').textContent=nid;sOv('ovR');
+    }else{
+      g('eMsg').textContent=data.message||'خطأ غير معروف';sOv('ovE');
+    }
+  }catch(err){
+    setLoad(false);
+    g('eMsg').textContent='تعذّر الاتصال: '+err.message;sOv('ovE');
+  }
+});
+
+addM();upBar();
+</script>
+</body>
+</html>
